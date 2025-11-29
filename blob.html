@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat AI & Blob Generator</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load html2canvas untuk fungsi download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Font Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+    <style>
+        :root {
+            --v-primary-color: #0084ff; /* Default, akan di-override oleh JS */
+        }
+        
+        @layer base {
+            body {
+                font-family: 'Inter', sans-serif;
+            }
+        }
+        
+        .bg-hero-gradient {
+            background: linear-gradient(135deg, #f0f4f8 0%, #c4d7e7 100%);
+        }
+
+        .bg-primary-chat {
+            background-color: var(--v-primary-color);
+        }
+
+        .text-primary-chat {
+            color: var(--v-primary-color);
+        }
+
+        .focus\:ring-primary-chat:focus {
+            --tw-ring-color: var(--v-primary-color);
+        }
+
+        @keyframes vSlideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-\[vSlideUp_0\.3s_ease-out\] {
+            animation: vSlideUp 0.3s ease-out;
+        }
+
+        /* PERBAIKAN UKURAN: Mengatur lebar maksimum yang lebih besar untuk Blob */
+        #blob-wrapper {
+            /* Batasi ukuran maksimum hingga 400px, namun tetap fleksibel (w-full) */
+            max-width: 400px; 
+            width: 90%; /* Gunakan 90% lebar viewport pada perangkat kecil */
+            aspect-ratio: 1 / 1; /* Pastikan selalu kotak */
+        }
+
+        /* Tampilan chat fullscreen di perangkat mobile */
+        @media (max-width: 767px) {
+            #chat-box {
+                bottom: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                border-radius: 0 !important;
+            }
+            /* Pastikan Blob tidak terlalu besar di mobile, gunakan padding/margin yang cukup */
+            #blob-wrapper {
+                max-width: 80vw;
+            }
+        }
+    </style>
+</head>
+<body class="bg-hero-gradient min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div id="v-widget-container" class="w-full h-full p-4">
+        
+        <!-- 1. KONTEN UTAMA (BLOB GENERATOR) -->
+        <div class="w-full max-w-sm sm:max-w-xl mx-auto flex flex-col items-center justify-center flex-grow"> 
+            
+            <!-- BLOB WRAPPER RESPONSIVE DENGAN UKURAN YANG DITINGKATKAN -->
+            <div id="blob-wrapper" class="mx-auto my-5 relative">
+                <div 
+                    id="blob-display"
+                    class="w-full h-full p-1 bg-cover bg-center mt-5 shadow-xl"
+                    style="
+                        border-radius: 41% 59% 38% 62% / 56% 60% 40% 44%; 
+                        background-image: url('https://avatars.githubusercontent.com/u/79414671?v=4'); 
+                        background-color: #FFFFFF;
+                        background-repeat: no-repeat;
+                    "
+                ></div>
+            </div>
+
+            <p class="text-xl font-mono text-center mt-4 text-gray-800 break-words max-w-full px-2 text-sm sm:text-lg">
+                border-radius: <span id="blob-style-text" class="text-blue-700 font-bold">41% 59% 38% 62% / 56% 60% 40% 44%</span>;
+            </p>
+
+            <!-- CONTAINER TOMBOL -->
+            <div class="flex justify-center items-center gap-3 mt-8">
+
+                <!-- Tombol Input File Fleksibel (Pilih Gambar) -->
+                <input 
+                    type="file" 
+                    id="file-input"
+                    accept="image/*"
+                    class="hidden" 
+                />
+                <button 
+                    id="file-button"
+                    class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 h-12 flex items-center shadow-md text-base"
+                    title="Pilih Gambar"
+                >
+                    <!-- Ikon Upload SVG -->
+                    <svg class="w-5 h-5 fill-current mr-2" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> 
+                    Pilih Gambar
+                </button>
+
+                <!-- Tombol Generate (Reload) -->
+                <button 
+                    id="generate-button"
+                    class="bg-green-600 hover:bg-green-700 text-white w-12 h-12 rounded-lg flex items-center justify-center transition duration-200 shadow-md"
+                    title="Generate Blob"
+                >
+                    <!-- Ikon Reload SVG -->
+                    <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg> 
+                </button>
+
+                <!-- Tombol Download -->
+                <button 
+                    id="download-button"
+                    class="bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-lg flex items-center justify-center transition duration-200 shadow-md"
+                    title="Download Blob"
+                >
+                    <!-- Ikon Download SVG -->
+                    <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 2. CHAT WIDGET FAB BUTTON -->
+        <div 
+            id="chat-fab"
+            class="fixed bottom-5 right-5 w-16 h-16 bg-primary-chat rounded-full shadow-xl flex items-center justify-center cursor-pointer transform hover:scale-110 transition-transform duration-300 z-[99999]"
+        >
+            <svg viewBox="0 0 24 24" class="w-8 h-8 fill-white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path></svg>
+        </div>
+
+        <!-- 3. CHAT WIDGET BOX -->
+        <div 
+            id="chat-box"
+            class="fixed bottom-[90px] right-5 w-[380px] h-[550px] bg-white rounded-xl shadow-2xl flex-col overflow-hidden z-[99999] border border-gray-200 hidden md:bottom-5 md:right-5"
+        >
+            <!-- Header -->
+            <div class="flex justify-between items-center p-4 border-b border-gray-100 bg-white font-bold text-gray-900">
+                <span id="chat-title">chat AI</span>
+                <span id="chat-close" class="cursor-pointer text-xl">&times;</span>
+            </div>
+            
+            <!-- Message Display Area -->
+            <div id="v-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-2">
+                <!-- Messages will be inserted here -->
+            </div>
+            
+            <!-- Input Area -->
+            <div class="flex p-3 border-t border-gray-200 bg-white items-center gap-2">
+                <input
+                    type="text"
+                    id="input-message"
+                    placeholder="Ketik pesan..."
+                    autocomplete="off"
+                    class="flex-1 p-2 border border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-primary-chat disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+                <button 
+                    id="send-button"
+                    class="p-2 rounded-full flex items-center justify-center transition duration-200 hover:bg-gray-100"
+                >
+                    <svg viewBox="0 0 24 24" class="w-6 h-6" id="send-icon"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Watermark -->
+            <div class="text-center text-xs p-1 bg-white border-t border-gray-200 text-gray-500">
+                <a id="watermark-link" href="#" target="_blank" rel="noopener noreferrer" class="font-bold hover:text-primary-chat transition duration-200">
+                    Powered by chat AI
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- KONFIGURASI PENTING (CHAT WIDGET) ---
+        const CONFIG = {
+            apiUrl: "https://chat.verdoank.workers.dev/",
+            title: "chat AI",
+            primaryColor: "#0084ff",
+            welcomeMessage: "Ada pertanyaan? Saya punya jawabannya",
+            watermarkText: "Powered by chat AI",
+            watermarkLink: "#"
+        };
+
+        // --- DOM Elements ---
+        const chatFab = document.getElementById('chat-fab');
+        const chatBox = document.getElementById('chat-box');
+        const messagesContainer = document.getElementById('v-messages');
+        const inputMessageElement = document.getElementById('input-message');
+        const sendButton = document.getElementById('send-button');
+        const chatCloseButton = document.getElementById('chat-close');
+        const blobDisplay = document.getElementById('blob-display');
+        const blobStyleText = document.getElementById('blob-style-text');
+        const generateButton = document.getElementById('generate-button');
+        const downloadButton = document.getElementById('download-button');
+        const fileInput = document.getElementById('file-input');
+        const fileButton = document.getElementById('file-button');
+
+        // --- STATE CHAT WIDGET ---
+        let isChatOpen = false;
+        let messages = [
+            { role: "system", content: `You are ${CONFIG.title}.` },
+            { role: "ai", content: CONFIG.welcomeMessage }
+        ];
+        let isLoading = false;
+        let blobStyle = '41% 59% 38% 62% / 56% 60% 40% 44%';
+        let imageFile = null;
+
+        // --- Helper Functions ---
+
+        /**
+         * Render message content, handling markdown code blocks and basic formatting.
+         */
+        function renderMessageContent(content, element) {
+            const escapedContent = content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const parts = escapedContent.split(/```([\s\S]*?)```/g);
+            element.innerHTML = ''; // Clear existing content
+
+            parts.forEach((part, index) => {
+                if (index % 2 !== 0) {
+                    // Code Block
+                    const pre = document.createElement('pre');
+                    pre.className = "bg-gray-800 text-white p-2 rounded-md overflow-x-auto my-1 text-sm";
+                    pre.textContent = part.trim();
+                    element.appendChild(pre);
+                } else {
+                    // Text Content (replace \n with <br>)
+                    const span = document.createElement('span');
+                    span.innerHTML = part.replace(/\n/g, '<br>');
+                    element.appendChild(span);
+                }
+            });
+        }
+
+        /**
+         * Render all messages to the DOM.
+         */
+        function renderMessages() {
+            messagesContainer.innerHTML = '';
+            
+            messages.forEach((msg, index) => {
+                const isUser = msg.role === 'user';
+                const isAi = msg.role === 'ai' || msg.role === 'assistant';
+                
+                if (!isUser && !isAi) return;
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `max-w-[85%] p-3 rounded-xl text-sm leading-snug word-wrap break-words shadow-sm ${
+                    isUser 
+                        ? 'bg-primary-chat text-white self-end rounded-br-sm' 
+                        : 'bg-white border border-gray-300 text-gray-700 self-start rounded-bl-sm'
+                }`;
+                messageDiv.setAttribute('data-role', msg.role); // Useful for debugging
+
+                renderMessageContent(msg.content, messageDiv);
+                messagesContainer.appendChild(messageDiv);
+            });
+
+            if (isLoading) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.id = 'v-loading';
+                loadingDiv.className = "max-w-[85%] p-3 rounded-xl text-sm leading-snug word-wrap break-words shadow-sm bg-white border border-gray-300 text-gray-700 self-start rounded-bl-sm";
+                loadingDiv.textContent = "Sedang mengetik...";
+                messagesContainer.appendChild(loadingDiv);
+            }
+
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // --- LOGIC BLOB GENERATOR ---
+        function generateRandomBlobStyle() {
+            const randomInt = () => Math.floor(Math.random() * (70 - 30 + 1)) + 30;
+            const p1 = randomInt(); const p2 = 100 - p1;
+            const p3 = randomInt(); const p4 = 100 - p3;
+            const p5 = randomInt(); const p6 = 100 - p5;
+            const p7 = randomInt(); const p8 = 100 - p7;
+            blobStyle = `${p1}% ${p2}% ${p3}% ${p4}% / ${p5}% ${p6}% ${p7}% ${p8}%`;
+            
+            // Update UI
+            blobDisplay.style.borderRadius = blobStyle;
+            blobStyleText.textContent = blobStyle;
+        }
+
+        function handleImageChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imageFile = e.target.result;
+                    blobDisplay.style.backgroundImage = `url(${imageFile})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function downloadBlob() {
+            if (!blobDisplay) return;
+            
+            // html2canvas is available globally via CDN
+            const canvas = await html2canvas(blobDisplay, { 
+                backgroundColor: null, 
+                useCORS: true, 
+                allowTaint: true 
+            });
+            
+            const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            const link = document.createElement('a');
+            link.download = 'blob-image.png';
+            link.href = image;
+            link.click();
+        }
+
+        // --- LOGIC CHAT WIDGET ---
+        async function sendMessage() {
+            const text = inputMessageElement.value.trim();
+            if (!text || isLoading) return;
+
+            const userMessage = { role: "user", content: text };
+            messages = [...messages, userMessage];
+            inputMessageElement.value = '';
+            isLoading = true;
+            renderMessages(); // Update UI with user message and loading indicator
+
+            const historyForApi = messages.filter(msg => msg.role !== 'ai'); 
+            
+            // Disable input while loading
+            inputMessageElement.disabled = true;
+            sendButton.disabled = true;
+
+            try {
+                const res = await fetch(CONFIG.apiUrl, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ inputs: { messages: historyForApi } })
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({ error: `Server Error: Status ${res.status}` }));
+                    const errorMessage = `Gangguan Server: ${errorData.error || res.statusText}`;
+                    messages = [...messages, { role: "ai", content: errorMessage }];
+                    return;
+                }
+
+                const data = await res.json();
+                let reply = "";
+                if (data.response && typeof data.response === 'string') reply = data.response;
+                else if (data.result && data.result.response) reply = data.result.response;
+                else reply = JSON.stringify(data);
+
+                messages = [...messages, { role: "assistant", content: reply }];
+
+            } catch (e) {
+                messages = [...messages, { role: "ai", content: "Gangguan koneksi/jaringan." }];
+            } finally {
+                isLoading = false;
+                inputMessageElement.disabled = false;
+                sendButton.disabled = false;
+                renderMessages(); // Final render
+            }
+        }
+
+        function toggleChat() {
+            isChatOpen = !isChatOpen;
+            chatBox.style.display = isChatOpen ? 'flex' : 'none';
+            if (isChatOpen) {
+                 // Animasi slide-up saat chat dibuka
+                chatBox.classList.remove('animate-\[vSlideUp_0\.3s_ease-out\]');
+                void chatBox.offsetWidth; // Force reflow
+                chatBox.classList.add('animate-\[vSlideUp_0\.3s_ease-out\]');
+                renderMessages(); // Ensure messages are displayed when opening
+            }
+        }
+
+        // --- Event Handlers & Initialization ---
+        window.onload = function() {
+            // 1. Initial Config Setup
+            document.getElementById('chat-title').textContent = CONFIG.title;
+            document.getElementById('watermark-link').textContent = CONFIG.watermarkText;
+            document.getElementById('watermark-link').href = CONFIG.watermarkLink;
+            document.getElementById('send-icon').style.fill = CONFIG.primaryColor;
+            document.documentElement.style.setProperty('--v-primary-color', CONFIG.primaryColor);
+
+            // 2. Initial Message Render
+            renderMessages(); 
+
+            // 3. Event Listeners
+            chatFab.addEventListener('click', toggleChat);
+            chatCloseButton.addEventListener('click', toggleChat);
+            sendButton.addEventListener('click', sendMessage);
+            inputMessageElement.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            // Blob Generator Listeners (Termasuk pencegahan default untuk FIX ZOOM)
+            generateButton.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                e.stopPropagation(); // FIX ZOOM
+                generateRandomBlobStyle();
+            });
+
+            downloadButton.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                e.stopPropagation(); // FIX ZOOM
+                downloadBlob();
+            });
+
+            fileButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation(); // FIX ZOOM
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', handleImageChange);
+        };
+    </script>
+</body>
+</html>
