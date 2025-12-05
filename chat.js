@@ -114,8 +114,8 @@
             background: ${CONFIG.primaryColor}; 
             border: none; 
             cursor: pointer; 
-            width: 48px; /* <<< PERUBAHAN PENTING (Lebar Tombol) */
-            height: 48px; /* <<< PERUBAHAN PENTING (Tinggi Tombol) */
+            width: 40px; /* <<< PERUBAHAN PENTING (Lebar Tombol) */
+            height: 40px; /* <<< PERUBAHAN PENTING (Tinggi Tombol) */
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
