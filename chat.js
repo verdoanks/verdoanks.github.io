@@ -26,7 +26,7 @@
             position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
             background-color: ${CONFIG.primaryColor}; border-radius: 50%;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-            cursor: pointer; /* DIUBAH: cursor: none menjadi pointer */
+            cursor: pointer; 
             z-index: 99999;
             display: flex; align-items: center; justify-content: center;
             transition: transform 0.3s;
@@ -75,46 +75,41 @@
         .v-msg.ai { background: white; align-self: flex-start; border: 1px solid #ddd; color: #333; border-bottom-left-radius: 2px; }
         .v-msg.user { background: ${CONFIG.primaryColor}; align-self: flex-end; color: white; border-bottom-right-radius: 2px; }
         
-        /* --- PERUBAHAN PENTING UNTUK INPUT DAN TOMBOL --- */
+        /* --- PERUBAHAN PENTING UNTUK INPUT DAN TOMBOL (Jarak Ditinggikan) --- */
         .v-input-area { 
-            padding: 10px; 
+            /* Padding vertikal dinaikkan menjadi 12px (sebelumnya 10px) */
+            padding: 12px 15px; /* <<< PERUBAHAN PENTING */
             border-top: 1px solid #eee; 
             background: white; 
             display: flex; 
             align-items: center; 
-            /* <<< PERUBAHAN PENTING: Tambahkan margin horizontal untuk estetika */
-            padding-left: 15px; 
-            padding-right: 15px; 
         } 
 
-        #v-input-wrapper { /* Wrapper untuk menampung input dan tombol kirim */
+        #v-input-wrapper {
             flex: 1; 
             position: relative;
-            /* <<< PERUBAHAN PENTING: Lebar wrapper diatur otomatis oleh flex */
         }
 
         .v-input-area input { 
             width: 100%; 
-            /* Padding Kanan disesuaikan untuk memberi ruang pada tombol kirim */
-            padding: 10px 50px 10px 15px; /* <<< PERUBAHAN PENTING: 50px untuk tombol 40px + 10px jarak */
+            padding: 10px 50px 10px 15px; 
             border: 1px solid #ddd; 
-            border-radius: 999px; /* Input setengah lingkaran/pill shape */
+            border-radius: 999px; 
             outline: none; 
             cursor: text;
-            height: 40px; /* <<< PERUBAHAN PENTING: Tetapkan tinggi input */
-            box-sizing: border-box; /* Pastikan padding tidak menambah lebar/tinggi input */
+            height: 40px; 
+            box-sizing: border-box;
+            margin: 0; /* Pastikan tidak ada margin tambahan */
         }
         .v-input-area input:disabled { background: #eee; cursor: not-allowed; }
         
         #v-send-btn { 
-            /* Posisi Absolute agar berada di dalam #v-input-wrapper */
             position: absolute; 
-            right: 5px; /* <<< PERUBAHAN PENTING: Jarak 5px dari sisi kanan wrapper */
+            right: 5px; 
             top: 50%; 
             transform: translateY(-50%); 
             z-index: 10;
             
-            /* Gaya Tombol (Lingkaran) */
             background: ${CONFIG.primaryColor}; 
             border: none; 
             cursor: pointer; 
@@ -163,15 +158,15 @@
                 display: flex;
             }
             .v-input-area {
-                 /* Menambahkan padding bottom untuk mengatasi notch/home indicator di iOS/Android modern */
-                 padding-bottom: max(10px, env(safe-area-inset-bottom));
+                 /* Menambahkan padding bottom untuk mengatasi notch/home indicator */
+                 padding-bottom: max(12px, env(safe-area-inset-bottom)); /* <<< PERUBAHAN PENTING */
+                 padding-top: 12px; /* <<< PERUBAHAN PENTING */
             }
         }
     `;
     document.head.appendChild(style);
 
     // --- 2. INJECT HTML (TIDAK BERUBAH) ---
-    // HTML sudah benar karena input dan tombol sudah di-wrap dalam #v-input-wrapper
     const widgetContainer = document.createElement('div');
     widgetContainer.id = 'v-widget-container';
     widgetContainer.innerHTML = `
