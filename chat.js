@@ -10,7 +10,7 @@
         brandingId: "VERDOANK_CHAT_V1"
     };
     
-    // --- 1. INJECT CSS (DIUBAH) ---
+    // --- 1. INJECT CSS (DIUBAH UNTUK RESPONSIVITAS) ---
     const style = document.createElement('style');
     style.innerHTML = `
         /* ... SISA CSS (TIDAK BERUBAH) ... */
@@ -84,8 +84,8 @@
         }
 
         .v-input-area input { 
-            width: 100%; /* Ambil 100% lebar wrapper */
-            padding: 10px 50px 10px 15px; /* Tambah padding kanan untuk tombol */
+            width: 100%; 
+            padding: 10px 52px 10px 15px; /* Padding Kanan DIUBAH menjadi 52px (40px tombol + 12px jarak) */
             border: 1px solid #ddd; 
             border-radius: 999px; /* Input setengah lingkaran/pill shape */
             outline: none; 
@@ -96,7 +96,7 @@
         #v-send-btn { 
             /* Posisi Absolute agar berada di dalam input */
             position: absolute; 
-            right: 5px; 
+            right: 8px; /* Jarak DIUBAH menjadi 8px dari sisi kanan wrapper */
             top: 50%; 
             transform: translateY(-50%); 
             z-index: 10;
@@ -104,10 +104,10 @@
             /* Gaya Tombol (Tetap Lingkaran) */
             background: ${CONFIG.primaryColor}; 
             border: none; 
-            cursor: none;
+            cursor: pointer; /* Ubah kembali cursor: none menjadi cursor: pointer */
             width: 40px; 
             height: 40px;
-            border-radius: 50%; /* Lingkaran sempurna */
+            border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center;
@@ -128,7 +128,7 @@
         #v-wm { text-align: center; font-size: 11px; padding: 4px; background: white; color: #888; border-top: 1px solid #eee; }
         #v-wm a { 
             text-decoration: none; color: #888; font-weight: bold; transition: color 0.2s;
-            cursor: none; 
+            cursor: pointer; /* Ubah kembali cursor: none menjadi cursor: pointer */
         }
         #v-wm a:hover { color: ${CONFIG.primaryColor}; }
         @media (max-width: 480px) {
