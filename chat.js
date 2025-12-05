@@ -10,7 +10,7 @@
         brandingId: "VERDOANK_CHAT_V1"
     };
     
-    // --- 1. INJECT CSS (DIUBAH UNTUK RESPONSIVITAS) ---
+    // --- 1. INJECT CSS (DIUBAH UNTUK RESPONSIVITAS INPUT) ---
     const style = document.createElement('style');
     style.innerHTML = `
         /* ... SISA CSS (TIDAK BERUBAH) ... */
@@ -26,7 +26,7 @@
             position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
             background-color: ${CONFIG.primaryColor}; border-radius: 50%;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-            cursor: none;
+            cursor: pointer; /* DIUBAH: cursor: none menjadi pointer */
             z-index: 99999;
             display: flex; align-items: center; justify-content: center;
             transition: transform 0.3s;
@@ -75,36 +75,49 @@
         .v-msg.ai { background: white; align-self: flex-start; border: 1px solid #ddd; color: #333; border-bottom-left-radius: 2px; }
         .v-msg.user { background: ${CONFIG.primaryColor}; align-self: flex-end; color: white; border-bottom-right-radius: 2px; }
         
-        /* --- PERUBAHAN CSS UNTUK INPUT DAN TOMBOL --- */
-        .v-input-area { padding: 10px; border-top: 1px solid #eee; background: white; display: flex; align-items: center; } /* Hapus gap: 8px */
+        /* --- PERUBAHAN PENTING UNTUK INPUT DAN TOMBOL --- */
+        .v-input-area { 
+            padding: 10px; 
+            border-top: 1px solid #eee; 
+            background: white; 
+            display: flex; 
+            align-items: center; 
+            /* <<< PERUBAHAN PENTING: Tambahkan margin horizontal untuk estetika */
+            padding-left: 15px; 
+            padding-right: 15px; 
+        } 
 
-        #v-input-wrapper { /* Wrapper baru untuk menahan tombol */
+        #v-input-wrapper { /* Wrapper untuk menampung input dan tombol kirim */
             flex: 1; 
             position: relative;
+            /* <<< PERUBAHAN PENTING: Lebar wrapper diatur otomatis oleh flex */
         }
 
         .v-input-area input { 
             width: 100%; 
-            padding: 10px 52px 10px 15px; /* Padding Kanan DIUBAH menjadi 52px (40px tombol + 12px jarak) */
+            /* Padding Kanan disesuaikan untuk memberi ruang pada tombol kirim */
+            padding: 10px 50px 10px 15px; /* <<< PERUBAHAN PENTING: 50px untuk tombol 40px + 10px jarak */
             border: 1px solid #ddd; 
             border-radius: 999px; /* Input setengah lingkaran/pill shape */
             outline: none; 
             cursor: text;
+            height: 40px; /* <<< PERUBAHAN PENTING: Tetapkan tinggi input */
+            box-sizing: border-box; /* Pastikan padding tidak menambah lebar/tinggi input */
         }
         .v-input-area input:disabled { background: #eee; cursor: not-allowed; }
         
         #v-send-btn { 
-            /* Posisi Absolute agar berada di dalam input */
+            /* Posisi Absolute agar berada di dalam #v-input-wrapper */
             position: absolute; 
-            right: 8px; /* Jarak DIUBAH menjadi 8px dari sisi kanan wrapper */
+            right: 5px; /* <<< PERUBAHAN PENTING: Jarak 5px dari sisi kanan wrapper */
             top: 50%; 
             transform: translateY(-50%); 
             z-index: 10;
             
-            /* Gaya Tombol (Tetap Lingkaran) */
+            /* Gaya Tombol (Lingkaran) */
             background: ${CONFIG.primaryColor}; 
             border: none; 
-            cursor: pointer; /* Ubah kembali cursor: none menjadi cursor: pointer */
+            cursor: pointer; 
             width: 40px; 
             height: 40px;
             border-radius: 50%; 
@@ -114,23 +127,25 @@
             flex-shrink: 0;
             transition: all 0.2s;
         }
-        /* --- AKHIR PERUBAHAN CSS --- */
+        /* --- AKHIR PERUBAHAN PENTING CSS --- */
 
         #v-send-btn:hover {
             opacity: 0.9;
-            transform: translateY(-50%) scale(1.05); /* Pertahankan translateY(-50%) */
+            transform: translateY(-50%) scale(1.05);
         }
         #v-send-btn:active {
-            transform: translateY(-50%) scale(0.9); /* Pertahankan translateY(-50%) */
+            transform: translateY(-50%) scale(0.9);
         }
         #v-send-btn svg { width: 20px; height: 20px; fill: white; margin-left: 2px; }
         pre { background: #2d2d2d; color: #fff; padding: 8px; border-radius: 6px; overflow-x: auto; margin: 5px 0; font-size: 0.8rem; }
         #v-wm { text-align: center; font-size: 11px; padding: 4px; background: white; color: #888; border-top: 1px solid #eee; }
         #v-wm a { 
             text-decoration: none; color: #888; font-weight: bold; transition: color 0.2s;
-            cursor: pointer; /* Ubah kembali cursor: none menjadi cursor: pointer */
+            cursor: pointer; 
         }
         #v-wm a:hover { color: ${CONFIG.primaryColor}; }
+        
+        /* Media Query untuk Responsivitas Penuh di Layar Kecil */
         @media (max-width: 480px) {
             #v-box { 
                 width: 100%; height: 100%; bottom: 0; right: 0; border-radius: 0; 
@@ -148,13 +163,15 @@
                 display: flex;
             }
             .v-input-area {
+                 /* Menambahkan padding bottom untuk mengatasi notch/home indicator di iOS/Android modern */
                  padding-bottom: max(10px, env(safe-area-inset-bottom));
             }
         }
     `;
     document.head.appendChild(style);
 
-    // --- 2. INJECT HTML (DIUBAH) ---
+    // --- 2. INJECT HTML (TIDAK BERUBAH) ---
+    // HTML sudah benar karena input dan tombol sudah di-wrap dalam #v-input-wrapper
     const widgetContainer = document.createElement('div');
     widgetContainer.id = 'v-widget-container';
     widgetContainer.innerHTML = `
@@ -167,7 +184,6 @@
                 <div class="v-msg ai">${CONFIG.welcomeMessage}</div>
             </div>
             <div class="v-input-area">
-                <!-- Wrapper baru untuk menampung input dan tombol -->
                 <div id="v-input-wrapper">
                     <input type="text" id="v-input" placeholder="Ketik pesan..." autocomplete="off">
                     <button class="v-btn" id="v-send-btn">
@@ -187,7 +203,7 @@
     `;
     document.body.appendChild(widgetContainer);
 
-    // --- 3. LOGIC (MENGIRIM SEMUA DATA WATERMARK) ---
+    // --- 3. LOGIC (TIDAK ADA PERUBAHAN) ---
     let messagesHistory = [{ 
         role: "system", 
         content: `You are ${CONFIG.title}, a helpful and friendly AI assistant speaking Indonesian. Always reply in Indonesian.` 
