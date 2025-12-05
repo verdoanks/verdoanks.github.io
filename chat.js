@@ -10,7 +10,7 @@
         brandingId: "VERDOANK_CHAT_V1"
     };
     
-    // --- 1. INJECT CSS (DIUBAH UNTUK RESPONSIVITAS INPUT) ---
+    // --- 1. INJECT CSS (DIUBAH TINGGI INPUT) ---
     const style = document.createElement('style');
     style.innerHTML = `
         /* ... SISA CSS (TIDAK BERUBAH) ... */
@@ -75,10 +75,9 @@
         .v-msg.ai { background: white; align-self: flex-start; border: 1px solid #ddd; color: #333; border-bottom-left-radius: 2px; }
         .v-msg.user { background: ${CONFIG.primaryColor}; align-self: flex-end; color: white; border-bottom-right-radius: 2px; }
         
-        /* --- PERUBAHAN PENTING UNTUK INPUT DAN TOMBOL (Jarak Ditinggikan) --- */
+        /* --- PERUBAHAN PENTING UNTUK INPUT DAN TOMBOL (Jarak dan Tinggi Ditingkatkan) --- */
         .v-input-area { 
-            /* Padding vertikal dinaikkan menjadi 12px (sebelumnya 10px) */
-            padding: 12px 15px; /* <<< PERUBAHAN PENTING */
+            padding: 12px 15px; 
             border-top: 1px solid #eee; 
             background: white; 
             display: flex; 
@@ -92,20 +91,22 @@
 
         .v-input-area input { 
             width: 100%; 
-            padding: 10px 50px 10px 15px; 
+            /* Padding Kanan disesuaikan untuk memberi ruang pada tombol kirim */
+            /* Padding atas/bawah ditingkatkan agar teks input terlihat di tengah */
+            padding: 13px 58px 13px 18px; /* <<< PERUBAHAN PENTING (Padding) */
             border: 1px solid #ddd; 
             border-radius: 999px; 
             outline: none; 
             cursor: text;
-            height: 40px; 
+            height: 48px; /* <<< PERUBAHAN PENTING (Tinggi Input) */
             box-sizing: border-box;
-            margin: 0; /* Pastikan tidak ada margin tambahan */
+            margin: 0; 
         }
         .v-input-area input:disabled { background: #eee; cursor: not-allowed; }
         
         #v-send-btn { 
             position: absolute; 
-            right: 5px; 
+            right: 4px; /* Disesuaikan agar tombol lebih dekat ke tepi input */
             top: 50%; 
             transform: translateY(-50%); 
             z-index: 10;
@@ -113,8 +114,8 @@
             background: ${CONFIG.primaryColor}; 
             border: none; 
             cursor: pointer; 
-            width: 40px; 
-            height: 40px;
+            width: 48px; /* <<< PERUBAHAN PENTING (Lebar Tombol) */
+            height: 48px; /* <<< PERUBAHAN PENTING (Tinggi Tombol) */
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
@@ -131,7 +132,7 @@
         #v-send-btn:active {
             transform: translateY(-50%) scale(0.9);
         }
-        #v-send-btn svg { width: 20px; height: 20px; fill: white; margin-left: 2px; }
+        #v-send-btn svg { width: 24px; height: 24px; fill: white; margin-left: 2px; } /* SVG juga sedikit dibesarkan */
         pre { background: #2d2d2d; color: #fff; padding: 8px; border-radius: 6px; overflow-x: auto; margin: 5px 0; font-size: 0.8rem; }
         #v-wm { text-align: center; font-size: 11px; padding: 4px; background: white; color: #888; border-top: 1px solid #eee; }
         #v-wm a { 
@@ -158,9 +159,8 @@
                 display: flex;
             }
             .v-input-area {
-                 /* Menambahkan padding bottom untuk mengatasi notch/home indicator */
-                 padding-bottom: max(12px, env(safe-area-inset-bottom)); /* <<< PERUBAHAN PENTING */
-                 padding-top: 12px; /* <<< PERUBAHAN PENTING */
+                 padding-bottom: max(12px, env(safe-area-inset-bottom)); 
+                 padding-top: 12px;
             }
         }
     `;
