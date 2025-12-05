@@ -77,8 +77,8 @@
         
         /* --- PERUBAHAN PENTING UNTUK INPUT DAN TOMBOL (Jarak Ditingkatkan JAUH LEBIH LEGA) --- */
         .v-input-area { 
-            /* Padding vertikal dinaikkan menjadi 18px (sebelumnya 12px) */
-            padding: 18px 15px; /* <<< KOREKSI PENTING */
+            /* Padding vertikal dinaikkan menjadi 20px (sebelumnya 12px) */
+            padding: 20px 15px; /* <<< KOREKSI PENTING */
             border-top: 1px solid #eee; 
             background: white; 
             display: flex; 
@@ -97,7 +97,7 @@
             border-radius: 999px; 
             outline: none; 
             cursor: text;
-            height: 48px; /* Tinggi Input */
+            height: 58px; /* Tinggi Input */
             box-sizing: border-box;
             margin: 0; 
         }
@@ -159,8 +159,8 @@
             }
             .v-input-area {
                  /* Menyesuaikan padding bottom di seluler agar konsisten dengan 18px */
-                 padding-bottom: max(18px, env(safe-area-inset-bottom)); /* <<< KOREKSI PENTING */
-                 padding-top: 18px; /* <<< KOREKSI PENTING */
+                 padding-bottom: max(20px, env(safe-area-inset-bottom)); /* <<< KOREKSI PENTING */
+                 padding-top: 20px; /* <<< KOREKSI PENTING */
             }
         }
     `;
