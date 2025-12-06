@@ -2,7 +2,7 @@
     // --- KONFIGURASI PENTING ---
     const CONFIG = {
         apiUrl: "https://aichat.verdoank.workers.dev/", 
-        title: "AI Chat", 
+        title: "AI ChatGPT", 
         primaryColor: "#0084ff",
         welcomeMessage: "Ada pertanyaan? Saya punya jawabannya",
         watermarkText: "Powered by VERDOANK",
@@ -78,7 +78,7 @@
         /* --- PERUBAHAN PENTING UNTUK INPUT DAN TOMBOL (Jarak Ditingkatkan JAUH LEBIH LEGA) --- */
         .v-input-area { 
             /* Padding vertikal dinaikkan menjadi 20px (sebelumnya 12px) */
-            padding: 20px 15px; /* <<< KOREKSI PENTING */
+            padding: 20px 18px; /* <<< KOREKSI PENTING */
             border-top: 1px solid #eee; 
             background: white; 
             display: flex; 
