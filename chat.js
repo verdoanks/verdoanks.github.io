@@ -78,7 +78,7 @@
         /* --- PERUBAHAN PENTING UNTUK INPUT DAN TOMBOL (Jarak Ditingkatkan JAUH LEBIH LEGA) --- */
         .v-input-area { 
             /* Padding vertikal dinaikkan menjadi 20px (sebelumnya 12px) */
-            padding: 20px 18px; /* <<< KOREKSI PENTING */
+            padding: 20px 12px; /* <<< KOREKSI PENTING */
             border-top: 1px solid #eee; 
             background: white; 
             display: flex; 
@@ -113,8 +113,8 @@
             background: ${CONFIG.primaryColor}; 
             border: none; 
             cursor: none; 
-            width: 35px; /* Tinggi Tombol */
-            height: 35px; /* Lebar Tombol */
+            width: 40px; /* Tinggi Tombol */
+            height: 40px; /* Lebar Tombol */
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
