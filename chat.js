@@ -113,8 +113,8 @@
             background: ${CONFIG.primaryColor}; 
             border: none; 
             cursor: none; 
-            width: 48px; /* Tinggi Tombol */
-            height: 48px; /* Lebar Tombol */
+            width: 35px; /* Tinggi Tombol */
+            height: 35px; /* Lebar Tombol */
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
