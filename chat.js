@@ -26,7 +26,7 @@
             position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
             background-color: ${CONFIG.primaryColor}; border-radius: 50%;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-            cursor: pointer; 
+            cursor: none; 
             z-index: 99999;
             display: flex; align-items: center; justify-content: center;
             transition: transform 0.3s;
@@ -53,7 +53,7 @@
         }
         .v-header { background: #ffffff; color: #050505; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-bottom: 1px solid #eee; }
         .v-close { 
-            cursor: pointer;
+            cursor: none;
             font-size: 1.2rem;
             background: none;
             border: none;
@@ -112,7 +112,7 @@
             
             background: ${CONFIG.primaryColor}; 
             border: none; 
-            cursor: pointer; 
+            cursor: none; 
             width: 48px; /* Tinggi Tombol */
             height: 48px; /* Lebar Tombol */
             border-radius: 50%; 
